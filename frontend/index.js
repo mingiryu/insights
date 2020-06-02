@@ -4,6 +4,7 @@ import CollaboratorList from './components/collaboratorList';
 import ActivityStream from './components/activityStream';
 import HistoryLog from './components/historyLog';
 import Wordcloud from './components/wordcloud';
+import AggregationList from './components/aggregationList';
 
 function App() {
     return (
@@ -12,6 +13,7 @@ function App() {
             <ActivityStream />
             <HistoryLog />
             <Wordcloud />
+            <AggregationList />
         </React.Fragment>
     );
 }
