@@ -11,9 +11,9 @@ function App() {
         <React.Fragment>
             <CollaboratorList />
             <ActivityStream />
-            <HistoryLog />
             <Wordcloud />
             <AggregationList />
+            <HistoryLog />
         </React.Fragment>
     );
 }

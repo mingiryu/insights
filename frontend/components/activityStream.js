@@ -108,7 +108,7 @@ function ActivityStream() {
     return (
         <Box padding={2}>
             <Heading variant="caps" size="small">Activity</Heading>
-            <Box height={150}>
+            <Box height={130}>
                 <MyResponsiveStream data={data} />
             </Box>
         </Box>

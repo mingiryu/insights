@@ -5,10 +5,14 @@ import { Box, FieldPicker, Heading, useRecords, useWatchable } from "@airtable/b
 
 const getWords = (records, field) => {
     if (!field) return [];
-    const cellValues = records.map(record => record.getCellValueAsString(field.id));
+    let cellValues = [];
+    records.forEach(record => {
+        const cellValueString = record.getCellValueAsString(field.id);
+        cellValueString.split(' ').forEach(value => cellValues.push(value));
+    })
     const data = [...new Set(cellValues)].map(a => {
-        const count = cellValues.filter(b => a === b).length
-        return { value: a, count: count }
+        const count = cellValues.filter(b => a.toLowerCase() === b.toLowerCase()).length
+        return { value: a.toLowerCase(), count: count }
     });
     return data;
 }
@@ -29,7 +33,7 @@ function Wordcloud() {
                     table={table}
                     onChange={newField => setField(newField)}
                     size="small"
-                    width="130px"
+                    width="110px"
                 />
             </Box>
             <TagCloud

@@ -9,7 +9,6 @@ function AggregationList() {
     const [field, setField] = React.useState(table.primaryField);
     const fieldExists = table.getFieldByIdIfExists(field.id);
     const records = useRecords(table, {fields: [fieldExists ? field : table.primaryField]});
-
     const availableAggregators = fieldExists ? field.availableAggregators : table.primaryField.availableAggregators;
     return (
         <Box padding={2}>
@@ -20,10 +19,10 @@ function AggregationList() {
                     table={table}
                     onChange={newField => setField(newField)}
                     size="small"
-                    width="130px"
+                    width="110px"
                 />
             </Box>
-            <Box display="flex">
+            <Box display="flex" flexWrap="wrap">
             {availableAggregators
                 // Every field has a 'None' aggregator which outputs a
                 // blank. It's not very interesting to look at, so we
