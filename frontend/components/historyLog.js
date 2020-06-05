@@ -24,7 +24,7 @@ function HistoryLog() {
         const currentUserId = session.currentUser.id;
         const currentUserActivity = globalConfig.get(`${currentUserId}_activity`);
         const newDate = new Date().toISOString().slice(0, 10);
-
+        console.log(newDate)
         if (currentUserActivity) {
             const recentActivity = currentUserActivity.pop();
             const [recentDate, recentCount] = recentActivity;
@@ -33,6 +33,7 @@ function HistoryLog() {
                 currentUserActivity.push([recentDate, newCount]);
                 globalConfig.setAsync(`${currentUserId}_activity`, currentUserActivity);
             } else {
+                currentUserActivity.push(recentActivity);
                 currentUserActivity.push([newDate, changesSum]);
                 if (currentUserActivity.length > MAX_USER_ACTIVITY) {
                     currentUserActivity.shift();
