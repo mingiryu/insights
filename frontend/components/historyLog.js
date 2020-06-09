@@ -7,16 +7,6 @@ const MAX_USER_ACTIVITY = 100;
 
 let sessionChanges = [];
 
-const dummyData = [
-    ["2020-06-01", 231],
-    ["2020-06-03", 324],
-    ["2020-06-04", 563],
-    ["2020-06-05", 214],
-    ["2020-06-06", 346],
-    ["2020-06-08", 12],
-    ["2020-06-09", 453],
-];
-
 function HistoryLog() {
     useWatchable(cursor, ['activeTableId']);
     const base = useBase();
@@ -71,7 +61,7 @@ function HistoryLog() {
     return (
         <Box padding={2}>
             <Heading variant="caps" size="small">History</Heading>
-            <Box height={500}>
+            <Box height={600}>
                 <RecordCardList records={newRecords.filter(newRecord => newRecord)} />
             </Box>
         </Box>
