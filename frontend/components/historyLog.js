@@ -1,15 +1,29 @@
 import React from 'react'
-import { base, cursor, globalConfig, session } from '@airtable/blocks';
-import { Box, Heading, RecordCardList, useRecords, useWatchable } from "@airtable/blocks/ui";
+import { cursor, globalConfig, session } from '@airtable/blocks';
+import { Box, Heading, RecordCardList, useBase, useRecords, useWatchable } from "@airtable/blocks/ui";
 
 const MAX_GLOBAL_HISTORY = 30;
 const MAX_USER_ACTIVITY = 100;
 
 let sessionChanges = [];
 
+const dummyData = [
+    ["2020-06-01", 231],
+    ["2020-06-03", 324],
+    ["2020-06-04", 563],
+    ["2020-06-05", 214],
+    ["2020-06-06", 346],
+    ["2020-06-08", 12],
+    ["2020-06-09", 453],
+];
+
 function HistoryLog() {
     useWatchable(cursor, ['activeTableId']);
-    const table = base.getTableById(cursor.activeTableId);
+    const base = useBase();
+    let table = base.getTableByIdIfExists(cursor.activeTableId);
+    if (!table) {
+        table = base.tables[0]
+    }
     const records = useRecords(table);
     let recordIds = globalConfig.get("globalHistory");
     if (!recordIds) {
@@ -24,24 +38,23 @@ function HistoryLog() {
         const currentUserId = session.currentUser.id;
         const currentUserActivity = globalConfig.get(`${currentUserId}_activity`);
         const newDate = new Date().toISOString().slice(0, 10);
-        console.log(newDate)
+        
         if (currentUserActivity) {
             const recentActivity = currentUserActivity.pop();
             const [recentDate, recentCount] = recentActivity;
             if (recentDate === newDate) {
                 const newCount = recentCount + changesSum;
                 currentUserActivity.push([recentDate, newCount]);
-                globalConfig.setAsync(`${currentUserId}_activity`, currentUserActivity);
             } else {
                 currentUserActivity.push(recentActivity);
                 currentUserActivity.push([newDate, changesSum]);
                 if (currentUserActivity.length > MAX_USER_ACTIVITY) {
                     currentUserActivity.shift();
                 }
-                globalConfig.setAsync(`${currentUserId}_activity`, currentUserActivity);
             }
+            globalConfig.setAsync(`${currentUserId}_activity`, currentUserActivity);
         } else {
-            globalConfig.setAsync(`${currentUserId}_activity`, [newDate, changesSum]);
+            globalConfig.setAsync(`${currentUserId}_activity`, [[newDate, changesSum]]);
         }
 
         const changedRecords = records.filter((record, i) => deltaChanges[i] > 0);
@@ -54,15 +67,12 @@ function HistoryLog() {
 
         sessionChanges = newChanges;
     }
-    console.log("sum", changesSum);
-    console.log("new", newChanges);
-    console.log("delta", deltaChanges);
-    console.log("changes", sessionChanges);
+    const newRecords = recordIds.map(recordId => records.find(record => record.id === recordId));
     return (
         <Box padding={2}>
             <Heading variant="caps" size="small">History</Heading>
-            <Box height={200}>
-                <RecordCardList records={recordIds.map(recordId => records.find(record => record.id === recordId))} />
+            <Box height={500}>
+                <RecordCardList records={newRecords.filter(newRecord => newRecord)} />
             </Box>
         </Box>
     )

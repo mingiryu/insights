@@ -1,14 +1,18 @@
 import React from 'react'
-import { base, cursor } from '@airtable/blocks';
-import {Box, FieldPicker, Heading, useRecords, useWatchable} from '@airtable/blocks/ui';
+import { cursor } from '@airtable/blocks';
+import { Box, FieldPicker, Heading, useBase, useRecords, useWatchable } from '@airtable/blocks/ui';
 import Aggregation from './aggregation';
 
 function AggregationList() {
     useWatchable(cursor, ['activeTableId']);
-    const table = base.getTableById(cursor.activeTableId);
+    const base = useBase();
+    let table = base.getTableByIdIfExists(cursor.activeTableId);
+    if (!table) {
+        table = base.tables[0]
+    }
     const [field, setField] = React.useState(table.primaryField);
     const fieldExists = table.getFieldByIdIfExists(field.id);
-    const records = useRecords(table, {fields: [fieldExists ? field : table.primaryField]});
+    const records = useRecords(table, { fields: [fieldExists ? field : table.primaryField] });
     const availableAggregators = fieldExists ? field.availableAggregators : table.primaryField.availableAggregators;
     return (
         <Box padding={2}>
@@ -19,23 +23,23 @@ function AggregationList() {
                     table={table}
                     onChange={newField => setField(newField)}
                     size="small"
-                    width="110px"
+                    width="130px"
                 />
             </Box>
             <Box display="flex" flexWrap="wrap">
-            {availableAggregators
-                // Every field has a 'None' aggregator which outputs a
-                // blank. It's not very interesting to look at, so we
-                // filter it out.
-                .filter(aggregator => aggregator.key !== 'none')
-                .map((aggregator, key) => (
-                    <Aggregation
-                        key={key}
-                        field={fieldExists ? field : table.primaryField}
-                        aggregator={aggregator}
-                        records={records}
-                    />
-                ))}
+                {availableAggregators
+                    // Every field has a 'None' aggregator which outputs a
+                    // blank. It's not very interesting to look at, so we
+                    // filter it out.
+                    .filter(aggregator => aggregator.key !== 'none')
+                    .map((aggregator, key) => (
+                        <Aggregation
+                            key={key}
+                            field={fieldExists ? field : table.primaryField}
+                            aggregator={aggregator}
+                            records={records}
+                        />
+                    ))}
             </Box>
         </Box>
     )

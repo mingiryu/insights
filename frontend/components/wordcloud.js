@@ -1,7 +1,7 @@
 import React from 'react'
 import { TagCloud } from 'react-tagcloud'
-import { base, cursor } from '@airtable/blocks';
-import { Box, FieldPicker, Heading, useRecords, useWatchable } from "@airtable/blocks/ui";
+import { cursor } from '@airtable/blocks';
+import { Box, FieldPicker, Heading, useBase, useRecords, useWatchable } from "@airtable/blocks/ui";
 
 const getWords = (records, field) => {
     if (!field) return [];
@@ -19,11 +19,15 @@ const getWords = (records, field) => {
 
 function Wordcloud() {
     useWatchable(cursor, ['activeTableId']);
-    const table = base.getTableById(cursor.activeTableId);
+    const base = useBase();
+    let table = base.getTableByIdIfExists(cursor.activeTableId);
+    if (!table) {
+        table = base.tables[0]
+    }
     const [field, setField] = React.useState(table.primaryField);
-    const records = useRecords(table);
     const fieldExists = table.getFieldByIdIfExists(field.id);
-    const data = fieldExists ? getWords(records, field) : getWords(records, table.primaryField);
+    const records = useRecords(table, {fields: fieldExists ? [field] : [table.primaryField]});
+    const data =  getWords(records, fieldExists ? field : table.primaryField);
     return (
         <Box padding={2}>
             <Box display="flex" justifyContent="space-between">
@@ -33,7 +37,7 @@ function Wordcloud() {
                     table={table}
                     onChange={newField => setField(newField)}
                     size="small"
-                    width="110px"
+                    width="130px"
                 />
             </Box>
             <TagCloud
