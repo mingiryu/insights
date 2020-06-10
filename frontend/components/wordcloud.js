@@ -8,7 +8,9 @@ const getWords = (records, field) => {
     let cellValues = [];
     records.forEach(record => {
         const cellValueString = record.getCellValueAsString(field.id);
-        cellValueString.split(' ').forEach(value => cellValues.push(value));
+        if (cellValueString) {
+            cellValueString.split(' ').forEach(value => cellValues.push(value.trim().replace(',','').replace('.','')));
+        }
     })
     const data = [...new Set(cellValues)].map(a => {
         const count = cellValues.filter(b => a.toLowerCase() === b.toLowerCase()).length

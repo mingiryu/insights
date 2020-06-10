@@ -68,11 +68,12 @@ const pruneActivityByDate = (activity, dateRange) => {
     let idx = 0;
 
     while (startDate < endDate) {
-        let [date, count] = activity[idx];
-
         if (idx > activity.length - 1) {
             newActivity.push(0);
+            startDate.setDate(startDate.getDate() + 1)
         } else {
+            const [date, count] = activity[idx];
+
             if (date === startDate.toISOString().slice(0, 10)) {
                 newActivity.push(count);
                 idx++;
@@ -107,13 +108,12 @@ const zipPrunedActivities = (activities, dateRange) => {
 function ActivityStream() {
     const [dateRange, setDateRange] = React.useState(dateRangeOptions[0].value);
     const collaboratorIds = base.activeCollaborators.map(collaborator => collaborator.id);
-    const activeCollaboratorsActivity = collaboratorIds.map(collaboratorId => {
+    const collaboratorsActivity = collaboratorIds.map(collaboratorId => {
         const collaboratorActivity = globalConfig.get(`${collaboratorId}_activity`);
         const prunedActivity = pruneActivityByDate(collaboratorActivity, dateRange);
         return [collaboratorId, prunedActivity];
     })
-
-    const data = zipPrunedActivities(activeCollaboratorsActivity, dateRange);
+    const data = zipPrunedActivities(collaboratorsActivity, dateRange);
     return (
         <Box padding={2}>
             <Box display="flex" justifyContent="space-between">
