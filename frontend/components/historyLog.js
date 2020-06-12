@@ -15,6 +15,7 @@ function HistoryLog() {
         table = base.tables[0]
     }
     const records = useRecords(table);
+    
     let recordIds = globalConfig.get("globalHistory");
     if (!recordIds) {
         recordIds = [];

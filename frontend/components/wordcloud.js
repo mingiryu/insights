@@ -9,13 +9,15 @@ const getWords = (records, field) => {
     records.forEach(record => {
         const cellValueString = record.getCellValueAsString(field.id);
         if (cellValueString) {
-            cellValueString.split(' ').forEach(value => cellValues.push(value.trim().replace(',','').replace('.','')));
+            cellValueString.split(' ').forEach(value => cellValues.push(value.trim().replace(',','').replace('.','').toLowerCase()));
         }
     })
     const data = [...new Set(cellValues)].map(a => {
-        const count = cellValues.filter(b => a.toLowerCase() === b.toLowerCase()).length
-        return { value: a.toLowerCase(), count: count }
-    });
+        const count = cellValues.filter(b => a === b).length
+        return { value: a, count: count }
+    }).filter((val, idx, arr) => {
+        return val.count > arr.length / 100;
+    })
     return data;
 }
 
@@ -43,8 +45,8 @@ function Wordcloud() {
                 />
             </Box>
             <TagCloud
-                minSize={10}
-                maxSize={18}
+                minSize={11}
+                maxSize={26}
                 tags={data}
             />
         </Box>
