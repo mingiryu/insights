@@ -2,7 +2,7 @@ import React from 'react'
 import { cursor, globalConfig, session } from '@airtable/blocks';
 import { Box, Heading, RecordCardList, useBase, useRecords, useWatchable } from "@airtable/blocks/ui";
 
-const MAX_GLOBAL_HISTORY = 30;
+const MAX_GLOBAL_HISTORY = 100;
 const MAX_USER_ACTIVITY = 100;
 
 let sessionChanges = [];
@@ -55,7 +55,7 @@ function HistoryLog() {
             newRecordIds = newRecordIds.slice(0, MAX_GLOBAL_HISTORY);
         }
         globalConfig.setAsync("globalHistory", newRecordIds);
-
+        recordIds = newRecordIds;
         sessionChanges = newChanges;
     }
     const newRecords = recordIds.map(recordId => records.find(record => record.id === recordId));
@@ -63,7 +63,7 @@ function HistoryLog() {
         <Box padding={2}>
             <Heading variant="caps" size="small">History</Heading>
             <Box height={600}>
-                <RecordCardList records={newRecords.filter(newRecord => newRecord)} />
+                <RecordCardList records={newRecords.filter(newRecord => newRecord).slice(0, 10)} />
             </Box>
         </Box>
     )
