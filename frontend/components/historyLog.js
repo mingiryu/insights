@@ -10,6 +10,8 @@ let sessionChanges = [];
 function HistoryLog() {
     useWatchable(cursor, ['activeTableId']);
     const base = useBase();
+    React.useEffect(() => {sessionChanges = []}, cursor.activeTableId);
+
     let table = base.getTableByIdIfExists(cursor.activeTableId);
     if (!table) {
         table = base.tables[0]
@@ -55,15 +57,14 @@ function HistoryLog() {
             newRecordIds = newRecordIds.slice(0, MAX_GLOBAL_HISTORY);
         }
         globalConfig.setAsync("globalHistory", newRecordIds);
-        recordIds = newRecordIds;
         sessionChanges = newChanges;
     }
-    const newRecords = recordIds.map(recordId => records.find(record => record.id === recordId));
+    const newRecords = recordIds.map(recordId => records.find(record => record.id === recordId)).filter(newRecord => newRecord).slice(0, 10);
     return (
         <Box padding={2}>
             <Heading variant="caps" size="small">History</Heading>
             <Box height={600}>
-                <RecordCardList records={newRecords.filter(newRecord => newRecord).slice(0, 10)} />
+                <RecordCardList records={newRecords} />
             </Box>
         </Box>
     )
