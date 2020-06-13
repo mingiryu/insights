@@ -1,6 +1,6 @@
 import React from 'react'
-import { base, globalConfig } from '@airtable/blocks';
-import { Box, Heading, SelectButtons } from "@airtable/blocks/ui";
+import { base } from '@airtable/blocks';
+import { Box, Heading, SelectButtons, useGlobalConfig } from "@airtable/blocks/ui";
 import { ResponsiveStream } from '@nivo/stream'
 
 const dateRangeOptions = [
@@ -37,7 +37,7 @@ const Stream = ({ data, keys }) => (
         axisBottom={null}
         axisLeft={null}
         curve="basis"
-        offsetType="diverging"
+        offsetType="none"
         colors={{ scheme: 'accent' }}
         fillOpacity={0.85}
         borderColor={{ theme: 'background' }}
@@ -106,6 +106,7 @@ const zipPrunedActivities = (activities, dateRange) => {
 }
 
 function ActivityStream() {
+    const globalConfig = useGlobalConfig();
     const [dateRange, setDateRange] = React.useState(dateRangeOptions[0].value);
     const collaboratorIds = base.activeCollaborators.map(collaborator => collaborator.id);
     const collaboratorsActivity = collaboratorIds.map(collaboratorId => {
