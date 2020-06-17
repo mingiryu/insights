@@ -4,6 +4,7 @@ import { Box, Heading, RecordCardList, useBase, useRecords, useWatchable } from 
 
 const MAX_GLOBAL_HISTORY = 100;
 const MAX_USER_ACTIVITY = 100;
+const MAX_VISIBLE_HISTORY = 30;
 
 let sessionChanges = [];
 
@@ -59,7 +60,7 @@ function HistoryLog() {
         globalConfig.setAsync("globalHistory", newRecordIds);
         sessionChanges = newChanges;
     }
-    const newRecords = recordIds.map(recordId => records.find(record => record.id === recordId)).filter(newRecord => newRecord).slice(0, 10);
+    const newRecords = recordIds.map(recordId => records.find(record => record.id === recordId)).filter(newRecord => newRecord).slice(0, MAX_VISIBLE_HISTORY);
     return (
         <Box padding={2}>
             <Heading variant="caps" size="small">History</Heading>
