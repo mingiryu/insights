@@ -1,8 +1,8 @@
 {
     "dependencies": {
         "@airtable/blocks": "0.0.51",
-        "@nivo/core": "^0.62.0",
-        "@nivo/stream": "^0.62.0",
+        "@nivo/core": "^0.80.0",
+        "@nivo/stream": "^0.80.0",
         "react": "^16.13.0",
         "react-dom": "^16.13.0",
         "react-tagcloud": "^2.0.0"
